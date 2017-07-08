@@ -3,3 +3,15 @@
 ################################################################################
 
 /.vs
+/Pets/.vs/Pets/v15
+/Pets/Pets.Api/bin/Debug/netcoreapp1.1
+/Pets/Pets.Api/obj
+/Pets/Pets.Core/bin/Debug/netcoreapp1.1
+/Pets/Pets.Core/obj
+/Pets/Pets.Infrastructure/bin/Debug/netcoreapp1.1
+/Pets/Pets.Infrastructure/obj
+/Pets/Pets.Tests/bin/Debug/netcoreapp1.1
+/Pets/Pets.Tests/obj
+/Pets/Pets.Tests.EndToEnd/bin/Debug/netcoreapp1.1
+/Pets/Pets.Tests.EndToEnd/obj
+/Pets/.vs/config
