@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Pets.Infrastructure.Commands.Users;
+using Pets.Infrastructure.DTO;
 using Pets.Infrastructure.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Pets.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class UsersController : Controller
     {
         private readonly IUserService _userService;
@@ -15,24 +18,34 @@ namespace Pets.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IEnumerable<UserDto>> Get()
         {
-            var users = await _userService.GetAllAsync();
-
-            return Json(users);
+            return await _userService.GetAllAsync();
         }
         
         [HttpGet("{email}")]
         public async Task<IActionResult> Get(string email)
         {
             var user = await _userService.GetAsync(email);
+            if(user == null)
+            {
+                return NotFound();
+            }
 
             return Json(user);
         }
         
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<IActionResult> Post([FromBody]CreateUser request)
         {
+            if (request == null)
+            {
+                return BadRequest();
+            }
+
+            await _userService.RegisterAsync(request.Email, request.FirstName, request.LastName, request.Password);
+
+            return Created($"users/{request.Email}", new object());
         }
         
         [HttpPut("{id}")]

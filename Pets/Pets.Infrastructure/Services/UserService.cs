@@ -39,6 +39,11 @@ namespace Pets.Infrastructure.Services
         public async Task<UserDto> GetAsync(string email)
         {
             var user = await _userRepository.GetAsync(email);
+            if(user == null)
+            {
+                return null;
+            }
+
             var userDto = new UserDto
             {
                 Id = user.Id,
@@ -62,7 +67,7 @@ namespace Pets.Infrastructure.Services
             //TODO: Login functionality
         }
 
-        public async Task RegisterAsync(Guid id, string email, string firstName, string lastName, string password)
+        public async Task RegisterAsync(string email, string firstName, string lastName, string password)
         {
             var user = await _userRepository.GetAsync(email);
             if(user != null)
@@ -72,7 +77,7 @@ namespace Pets.Infrastructure.Services
 
             //TODO: Generate salt for password
             var salt = "salt";
-            user = new User(id, email, firstName, lastName, password, salt);
+            user = new User(Guid.NewGuid(), email, firstName, lastName, password, salt);
             await _userRepository.AddAsync(user);
         }
     }

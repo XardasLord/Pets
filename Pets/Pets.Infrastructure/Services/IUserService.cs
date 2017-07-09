@@ -9,7 +9,7 @@ namespace Pets.Infrastructure.Services
     {
         Task<UserDto> GetAsync(string email);
         Task<IEnumerable<UserDto>> GetAllAsync();
-        Task RegisterAsync(Guid id, string email, string firstName, string lastName, string password);
+        Task RegisterAsync(string email, string firstName, string lastName, string password);
         Task LoginAsync(string email, string password);
     }
 }
