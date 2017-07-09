@@ -2,7 +2,7 @@
 
 namespace Pets.Core.Domain
 {
-    class CaringAnimal
+    public class CaringAnimal
     {
         public Guid Id { get; protected set; }
         public Guid AnimalToCareId { get; protected set; }

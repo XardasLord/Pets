@@ -2,7 +2,7 @@
 
 namespace Pets.Core.Domain
 {
-    abstract class Animal
+    public abstract class Animal
     {
         public Guid Id { get; protected set; }
         public string Name { get; protected set; }

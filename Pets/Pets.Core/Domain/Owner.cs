@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Pets.Core.Domain
 {
-    class Owner
+    public class Owner
     {
         public Guid UserId { get; protected set; }
 

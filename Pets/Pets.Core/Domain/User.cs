@@ -2,30 +2,34 @@
 
 namespace Pets.Core.Domain
 {
-    class User
+    public class User
     {
         public Guid Id { get; protected set; }
-        public string Login { get; protected set; }
+        public string Email { get; protected set; }
+        public string Password { get; protected set; }
+        public string Salt { get; protected set; }
         public string FirstName { get; protected set; }
         public string LastName { get; protected set; }
-        public string Email { get; protected set; }
         public DateTime CreatedAt { get; protected set; }
 
         protected User()
         {
         }
 
-        public User(string login, string email)
+        public User(Guid id, string email, string firstName, string lastName, string password, string salt)
         {
-            Id = Guid.NewGuid();
-            Login = login;
+            Id = id;
             Email = email;
+            Password = password;
+            Salt = salt;
+            FirstName = firstName;
+            LastName = lastName;
             CreatedAt = DateTime.UtcNow;
         }
 
-        public void SetLogin(string login)
+        public void SetEmail(string email)
         {
-            Login = login;
+            Email = email;
         }
 
         public void SetFirstName(string firstName)
@@ -38,9 +42,9 @@ namespace Pets.Core.Domain
             LastName = lastName;
         }
 
-        public void SetEmail(string email)
+        public void SetPassword(string password)
         {
-            Email = email;
+            Password = password;
         }
     }
 }
