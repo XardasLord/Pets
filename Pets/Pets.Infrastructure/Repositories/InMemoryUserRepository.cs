@@ -1,4 +1,5 @@
-﻿using Pets.Core.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using Pets.Core.Domain;
 using Pets.Core.Repositories;
 using System;
 using System.Collections.Generic;
@@ -7,13 +8,19 @@ using System.Threading.Tasks;
 
 namespace Pets.Infrastructure.Repositories
 {
-    public class InMemoryUserRepository : IUserRepository
+    public class InMemoryUserRepository : DbContext, IUserRepository
     {
-        ISet<User> _users = new HashSet<User>()
+        //ISet<User> _users = new HashSet<User>()
+        //{
+        //    new User(Guid.NewGuid(), "user1@email.pl", "Paweł", "Kowalewicz", "secret123", "salt"),
+        //    new User(Guid.NewGuid(), "user2@email.pl", "Second", "User", "secret123", "salt")
+        //};
+        DbSet<User> _users { get; set; }
+
+        public InMemoryUserRepository(DbContextOptions<InMemoryUserRepository> options)
+            : base(options)
         {
-            new User(Guid.NewGuid(), "user1@email.pl", "Paweł", "Kowalewicz", "secret123", "salt"),
-            new User(Guid.NewGuid(), "user2@email.pl", "Second", "User", "secret123", "salt")
-        };
+        }
 
         public async Task<User> GetAsync(Guid id)
         {
@@ -33,14 +40,13 @@ namespace Pets.Infrastructure.Repositories
         public async Task AddAsync(User user)
         {
             await Task.FromResult(_users.Add(user));
+            await SaveChangesAsync();
         }
 
         public async Task UpdateAsync(User user)
         {
-            var userToUpdate = await GetAsync(user.Id);
-            await RemoveAsync(user.Id);
-
-            _users.Add(user);
+            _users.Update(user);
+            await SaveChangesAsync();
         }
 
         public async Task RemoveAsync(Guid id)
@@ -48,7 +54,7 @@ namespace Pets.Infrastructure.Repositories
             var userToRemove = await GetAsync(id);
             _users.Remove(userToRemove);
 
-            await Task.CompletedTask;
+            await SaveChangesAsync();
         }
     }
 }

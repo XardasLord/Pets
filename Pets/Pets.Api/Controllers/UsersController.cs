@@ -2,6 +2,7 @@
 using Pets.Infrastructure.Commands.Users;
 using Pets.Infrastructure.DTO;
 using Pets.Infrastructure.Services;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -43,19 +44,61 @@ namespace Pets.Api.Controllers
                 return BadRequest();
             }
 
-            await _userService.RegisterAsync(request.Email, request.FirstName, request.LastName, request.Password);
-
+            try
+            {
+                await _userService.RegisterAsync(request.Email, request.FirstName, request.LastName, request.Password);
+            }
+            catch(Exception e)
+            {
+                return StatusCode(409, e.Message);
+            }
+            
             return Created($"users/{request.Email}", new object());
         }
         
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{email}")]
+        public async Task<IActionResult> Put(string email, [FromBody]UpdateUser request)
         {
+            if(request == null)
+            {
+                return BadRequest();
+            }
+
+            if (await DoesUserExist(email) == false)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _userService.UpdateAsync(request.Email, request.FirstName, request.LastName, request.Password);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(409, e.Message);
+            }
+
+            return NoContent();
         }
         
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> Delete(string email)
         {
+            if (await DoesUserExist(email) == false)
+            {
+                return NotFound();
+            }
+
+            await _userService.DeleteAsync(email);
+
+            return NoContent();
+        }
+
+        private async Task<bool> DoesUserExist(string email)
+        {
+            var user = await _userService.GetAsync(email);
+
+            return user == null ? false : true;
         }
     }
 }

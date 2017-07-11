@@ -56,6 +56,33 @@ namespace Pets.Infrastructure.Services
             return userDto;
         }
 
+        public async Task UpdateAsync(string email, string firstName, string lastName, string password)
+        {
+            var user = await _userRepository.GetAsync(email);
+            if(user == null)
+            {
+                throw new Exception($"User with email: {email} doesn't exist.");
+            }
+
+            user.SetEmail(email);
+            user.SetFirstName(firstName);
+            user.SetLastName(lastName);
+            user.SetPassword(password);
+
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task DeleteAsync(string email)
+        {
+            var user = await _userRepository.GetAsync(email);
+            if (user == null)
+            {
+                throw new Exception($"User with email: {email} doesn't exist.");
+            }
+
+            await _userRepository.RemoveAsync(user.Id);
+        }
+
         public async Task LoginAsync(string email, string password)
         {
             var user = await _userRepository.GetAsync(email);

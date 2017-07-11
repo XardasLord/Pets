@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using Pets.Core.Repositories;
 using Pets.Infrastructure.Repositories;
 using Pets.Infrastructure.Services;
@@ -27,6 +28,7 @@ namespace Pets.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddDbContext<InMemoryUserRepository>(opt => opt.UseInMemoryDatabase());
             services.AddScoped<IUserRepository, InMemoryUserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddMvc();

@@ -1,41 +1,62 @@
 ﻿using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
-using Pets.Api;
 using Pets.Infrastructure.Commands.Users;
 using Pets.Infrastructure.DTO;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Pets.Tests.EndToEnd.Controllers
 {
-    public class UserControllerTests
+    public class UserControllerTests : ControllerTestsBase
     {
-        private readonly TestServer _server;
-        private readonly HttpClient _client;
+        private CreateUser _existingUser;
+        private CreateUser _existingUserForDelete;
+        private UpdateUser _nonExistingUser;
 
         public UserControllerTests()
         {
-            _server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
-            _client = _server.CreateClient();
+            // Initializate data on start
+            _existingUser = new CreateUser
+            {
+                Email = "exist@email.com",
+                FirstName = "exist",
+                LastName = "exist",
+                Password = "secret"
+            };
+
+            _existingUserForDelete = new CreateUser
+            {
+                Email = "existForDelete@email.com",
+                FirstName = "existForDetele",
+                LastName = "existForDetele",
+                Password = "secret"
+            };
+
+            _nonExistingUser = new UpdateUser
+            {
+                Email = "test1000@email.com",
+                FirstName = "Non existing user name",
+                LastName = "Non existing user name",
+                Password = "secret"
+            };
+
+            RegisterUserAsync(_existingUser);
+            RegisterUserAsync(_existingUserForDelete);
         }
 
         [Fact]
         public async Task given_valid_email_user_should_exist()
         {
-            var email = "user1@email.pl";
+            var email = _existingUser.Email;
             var user = await GetUserAsync(email);
 
             user.Email.ShouldBeEquivalentTo(email);
         }
 
         [Fact]
-        public async Task given_invalid_email_user_should_not_exist()
+        public async Task given_invalid_email_user_should_return_NotFound_404_status_code()
         {
             var email = "user1000@email.pl";
             var response = await _client.GetAsync($"users/{email}");
@@ -44,23 +65,77 @@ namespace Pets.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task given_unique_email_user_should_be_created()
+        public async Task given_unique_email_user_should_be_created_and_return_201_status_code()
         {
             var request = new CreateUser
             {
-                Email = "test@email.com",
+                Email = "unique@email.com",
                 FirstName = "test",
                 LastName = "test",
                 Password = "secret"
             };
-            var payload = GetPayload(request);
-            var response = await _client.PostAsync("users", payload);
+
+            var response = await RegisterUserAsync(request);
 
             response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.Created);
             response.Headers.Location.ToString().ShouldBeEquivalentTo($"users/{request.Email}");
 
             var user = await GetUserAsync(request.Email);
             user.Email.ShouldBeEquivalentTo(request.Email);
+        }
+
+        [Fact]
+        public async Task given_email_to_register_which_already_exists_should_return_409_status_code()
+        {
+            var response = await RegisterUserAsync(_existingUser);
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.Conflict);
+        }
+
+        [Fact]
+        public async Task update_user_data_on_existing_email_should_return_NoContent_204_status_code()
+        {
+            var request = new UpdateUser
+            {
+                Email = _existingUser.Email,
+                FirstName = "Changed firstname",
+                LastName = "Changed lastname",
+                Password = "NewSecretPassword"
+            };
+            var payload = GetPayload(request);
+
+            var response = await _client.PutAsync($"users/{_existingUser.Email}", payload);
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task update_user_data_on_non_existing_email_should_return_NotFound_404_status_code()
+        {
+            var payload = GetPayload(_nonExistingUser);
+
+            var response = await _client.PutAsync($"users/{_nonExistingUser.Email}", payload);
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task delete_user_on_existing_email_should_return_NoContent_204_status_code_and_should_no_more_exist()
+        {
+            var response = await _client.DeleteAsync($"users/{_existingUserForDelete.Email}");
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NoContent);
+
+            response = await _client.GetAsync($"users/{_existingUserForDelete.Email}");
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task delete_user_on_non_existing_email_should_return_NotFound_404_status_code()
+        {
+            var response = await _client.DeleteAsync($"users/{_nonExistingUser.Email}");
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NotFound);
         }
 
         private async Task<UserDto> GetUserAsync(string email)
@@ -72,11 +147,12 @@ namespace Pets.Tests.EndToEnd.Controllers
             return JsonConvert.DeserializeObject<UserDto>(responseString);
         }
 
-        private static StringContent GetPayload(object data)
+        private async Task<HttpResponseMessage> RegisterUserAsync(CreateUser request)
         {
-            var json = JsonConvert.SerializeObject(data);
+            var payload = GetPayload(request);
+            var response = await _client.PostAsync("users", payload);
 
-            return new StringContent(json, Encoding.UTF8, "application/json");
+            return response;
         }
     }
 }
