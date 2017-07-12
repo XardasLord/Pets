@@ -2,9 +2,10 @@
 
 namespace Pets.Core.Domain
 {
-    public abstract class Animal
+    public class Animal
     {
         public Guid Id { get; protected set; }
+        public Guid UserId { get; protected set; }
         public string Name { get; protected set; }
         public int YearOfBirth { get; protected set; }
 
@@ -12,8 +13,9 @@ namespace Pets.Core.Domain
         {
         }
 
-        public Animal(string name)
+        public Animal(Guid userId, string name)
         {
+            UserId = userId;
             Name = name;
         }
 

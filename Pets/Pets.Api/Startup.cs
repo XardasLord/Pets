@@ -29,8 +29,13 @@ namespace Pets.Api
         {
             // Add framework services.
             services.AddDbContext<InMemoryUserRepository>(opt => opt.UseInMemoryDatabase());
+            services.AddDbContext<InMemoryAnimalRepository>(opt => opt.UseInMemoryDatabase());
+
             services.AddScoped<IUserRepository, InMemoryUserRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IAnimalRepository, InMemoryAnimalRepository>();
+            services.AddScoped<IAnimalService, AnimalService>();
             services.AddMvc();
         }
 

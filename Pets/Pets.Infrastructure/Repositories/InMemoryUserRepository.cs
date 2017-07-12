@@ -10,11 +10,6 @@ namespace Pets.Infrastructure.Repositories
 {
     public class InMemoryUserRepository : DbContext, IUserRepository
     {
-        //ISet<User> _users = new HashSet<User>()
-        //{
-        //    new User(Guid.NewGuid(), "user1@email.pl", "Paweł", "Kowalewicz", "secret123", "salt"),
-        //    new User(Guid.NewGuid(), "user2@email.pl", "Second", "User", "secret123", "salt")
-        //};
         DbSet<User> _users { get; set; }
 
         public InMemoryUserRepository(DbContextOptions<InMemoryUserRepository> options)
