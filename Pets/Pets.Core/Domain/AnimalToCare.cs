@@ -16,6 +16,7 @@ namespace Pets.Core.Domain
 
         public AnimalToCare(Animal animal, DateTime dateFrom, DateTime dateTo)
         {
+            Id = Guid.NewGuid();
             Animal = animal;
             DateFrom = dateFrom;
             DateTo = dateTo;
@@ -25,6 +26,16 @@ namespace Pets.Core.Domain
         public void SetIsTaken(bool isTaken)
         {
             IsTaken = isTaken;
+        }
+
+        public void SetDateFrom(DateTime dateFrom)
+        {
+            DateFrom = dateFrom;
+        }
+
+        public void SetDateTo(DateTime dateTo)
+        {
+            DateTo = dateTo;
         }
     }
 }

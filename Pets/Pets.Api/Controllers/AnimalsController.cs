@@ -2,7 +2,6 @@
 using Pets.Infrastructure.Commands.Animals;
 using Pets.Infrastructure.DTO;
 using Pets.Infrastructure.Services;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,18 +22,11 @@ namespace Pets.Api.Controllers
         [HttpGet("{name}")]
         public async Task<IActionResult> Get(string email, string name)
         {
-            UserDto user = new UserDto();
-
-            try
+            var animal = await _animalService.GetAsync(email, name);
+            if(animal == null)
             {
-                user = await _userService.GetAsync(email);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-
-            var animal = await _animalService.GetAsync(user.Id, name);
 
             return Json(animal);
         }
@@ -42,38 +34,31 @@ namespace Pets.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<AnimalDto>> Get(string email)
         {
-            UserDto user = new UserDto();
-
-            try
-            {
-                user = await _userService.GetAsync(email);
-            }
-            catch (Exception ex)
-            {
-                // Catch an error
-            }
-
-            return await _animalService.GetAllAsync(user.Id);
+            return await _animalService.GetAllAsync(email);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(string email, [FromBody]CreateAnimal request)
         {
-            UserDto user = new UserDto();
-
-            try
-            {
-                user = await _userService.GetAsync(email);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-
-            await _animalService.AddAsync(user.Id, request.Name, request.YearOfBirth);
+            await _animalService.AddAsync(email, request.Name, request.YearOfBirth);
 
             return NoContent();
         }
 
+        [HttpPut("{name}")]
+        public async Task<IActionResult> Put(string email, string name, [FromBody]UpdateAnimal request)
+        {
+            await _animalService.UpdateAsync(email, name, request.Name, request.YearOfBirth);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> Delete(string email, string name)
+        {
+            await _animalService.DeleteAsync(email, name);
+
+            return NoContent();
+        }
     }
 }
