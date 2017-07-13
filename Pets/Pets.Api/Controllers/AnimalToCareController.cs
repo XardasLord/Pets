@@ -44,7 +44,7 @@ namespace Pets.Api.Controllers
                 return NotFound();
             }
 
-            await _animalToCareService.AddAsync(animalId, request.DateFrom, request.DateTo);
+            await _animalToCareService.AddToCareListAsync(animalId, request.DateFrom, request.DateTo);
 
             return NoContent();
         }
@@ -53,7 +53,23 @@ namespace Pets.Api.Controllers
         public async Task<IActionResult> Post(Guid animalId)
         {
             //Getting care of animal by the user - send POST request.
-            await Task.CompletedTask;
+            await _animalToCareService.GetAnimalToCareAsync(animalId);
+
+            return NoContent();
+        }
+
+        [HttpPut("{animalId}")]
+        public async Task<IActionResult> Put(Guid animalId, [FromBody]UpdateAnimalToCare request)
+        {
+            await _animalToCareService.UpdateAsync(animalId, request.DateFrom, request.DateTo, request.IsTaken);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{animalId}")]
+        public async Task<IActionResult> Delete(Guid animalId)
+        {
+            await _animalToCareService.DeleteAsync(animalId);
 
             return NoContent();
         }

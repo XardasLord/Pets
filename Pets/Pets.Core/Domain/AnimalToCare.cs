@@ -5,6 +5,7 @@ namespace Pets.Core.Domain
     public class AnimalToCare
     {
         public Guid Id { get; protected set; }
+        public Guid AnimalId { get; protected set; }
         public Animal Animal { get; protected set; }
         public DateTime DateFrom { get; protected set; }
         public DateTime DateTo { get; protected set; }
@@ -14,10 +15,10 @@ namespace Pets.Core.Domain
         {
         }
 
-        public AnimalToCare(Animal animal, DateTime dateFrom, DateTime dateTo)
+        public AnimalToCare(Guid animalId, DateTime dateFrom, DateTime dateTo)
         {
             Id = Guid.NewGuid();
-            Animal = animal;
+            AnimalId = animalId;
             DateFrom = dateFrom;
             DateTo = dateTo;
             IsTaken = false;

@@ -12,7 +12,8 @@ namespace Pets.Infrastructure.Services
         Task<IEnumerable<AnimalToCareDto>> GetAllActiveAsync();
         Task<IEnumerable<AnimalToCareDto>> GetAllArchiveAsync();
 
-        Task AddAsync(Guid animalId, DateTime dateFrom, DateTime dateTo);
+        Task AddToCareListAsync(Guid animalId, DateTime dateFrom, DateTime dateTo);
+        Task GetAnimalToCareAsync(Guid animalId);
         Task UpdateAsync(Guid animalId, DateTime dateFrom, DateTime dateTo, bool isTaken);
         Task DeleteAsync(Guid animalId);
     }

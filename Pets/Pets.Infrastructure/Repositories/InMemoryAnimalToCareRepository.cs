@@ -35,7 +35,7 @@ namespace Pets.Infrastructure.Repositories
 
         public async Task<IEnumerable<AnimalToCare>> GetAsync(Guid animalId)
         {
-            return await Task.FromResult(_animalsToCare.Where(x => x.Animal.Id == animalId).ToList());
+            return await Task.FromResult(_animalsToCare.Where(x => x.AnimalId == animalId).ToList());
         }
 
         public async Task RemoveAsync(AnimalToCare animalToCare)

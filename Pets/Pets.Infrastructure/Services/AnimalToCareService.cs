@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Pets.Infrastructure.Commands.Animals;
 using Pets.Infrastructure.DTO;
 using Pets.Core.Repositories;
 using System.Linq;
@@ -29,15 +27,17 @@ namespace Pets.Infrastructure.Services
 
             foreach(var animalToCare in animalsToCare)
             {
+                var animalDto = await _animalRepository.GetAsync(animalToCare.AnimalId);
+
                 animals.Add(new AnimalToCareDto
                 {
                     Id = animalToCare.Id,
                     Animal = new AnimalDto
                     {
-                        Id = animalToCare.Animal.Id,
-                        Name = animalToCare.Animal.Name,
-                        UserId = animalToCare.Animal.UserId,
-                        YearOfBirth = animalToCare.Animal.YearOfBirth
+                        Id = animalDto.Id,
+                        Name = animalDto.Name,
+                        UserId = animalDto.UserId,
+                        YearOfBirth = animalDto.YearOfBirth
                     },
                     DateFrom = animalToCare.DateFrom,
                     DateTo = animalToCare.DateTo,
@@ -55,15 +55,17 @@ namespace Pets.Infrastructure.Services
 
             foreach (var animalToCare in animalsToCare)
             {
+                var animalDto = await _animalRepository.GetAsync(animalToCare.AnimalId);
+
                 animals.Add(new AnimalToCareDto
                 {
                     Id = animalToCare.Id,
                     Animal = new AnimalDto
                     {
-                        Id = animalToCare.Animal.Id,
-                        Name = animalToCare.Animal.Name,
-                        UserId = animalToCare.Animal.UserId,
-                        YearOfBirth = animalToCare.Animal.YearOfBirth
+                        Id = animalDto.Id,
+                        Name = animalDto.Name,
+                        UserId = animalDto.UserId,
+                        YearOfBirth = animalDto.YearOfBirth
                     },
                     DateFrom = animalToCare.DateFrom,
                     DateTo = animalToCare.DateTo,
@@ -81,15 +83,17 @@ namespace Pets.Infrastructure.Services
 
             foreach (var animalToCare in animalsToCare)
             {
+                var animalDto = await _animalRepository.GetAsync(animalId);
+
                 animals.Add(new AnimalToCareDto
                 {
                     Id = animalToCare.Id,
                     Animal = new AnimalDto
                     {
-                        Id = animalToCare.Animal.Id,
-                        Name = animalToCare.Animal.Name,
-                        UserId = animalToCare.Animal.UserId,
-                        YearOfBirth = animalToCare.Animal.YearOfBirth
+                        Id = animalDto.Id,
+                        Name = animalDto.Name,
+                        UserId = animalDto.UserId,
+                        YearOfBirth = animalDto.YearOfBirth
                     },
                     DateFrom = animalToCare.DateFrom,
                     DateTo = animalToCare.DateTo,
@@ -100,7 +104,7 @@ namespace Pets.Infrastructure.Services
             return animals;
         }
 
-        public async Task AddAsync(Guid animalId, DateTime dateFrom, DateTime dateTo)
+        public async Task AddToCareListAsync(Guid animalId, DateTime dateFrom, DateTime dateTo)
         {
             var animal = await _animalRepository.GetAsync(animalId);
             if (animal == null)
@@ -108,19 +112,31 @@ namespace Pets.Infrastructure.Services
                 throw new Exception("Animal of given ID doesn't exist.");
             }
 
-            var animalToCare = new AnimalToCare(animal, dateFrom, dateTo);
+            var animalToCare = new AnimalToCare(animal.Id, dateFrom, dateTo);
 
             await _animalToCareRepository.AddAsync(animalToCare);
         }
 
+        public async Task GetAnimalToCareAsync(Guid animalId)
+        {
+            var animalToGet = await GetActiveAnimalToCareById(animalId);
+            if (animalToGet == null)
+            {
+                throw new Exception("Animal with given ID is not available to get, because there is no active animal with that ID.");
+            }
+
+            //TODO: Connect Animal with user in `CaringAnimal`.
+
+        }
+
         public async Task DeleteAsync(Guid animalId)
         {
-            // Check if the user who wants to delete information is the owner of that animal.
+            //TODO: Check if the user who wants to delete information is the owner of that animal.
 
             var animalToDelete = await GetActiveAnimalToCareById(animalId);
             if(animalToDelete == null)
             {
-                throw new Exception("Animal with given ID is not available to delete, because there is no active animal.");
+                throw new Exception("Animal with given ID is not available to delete, because there is no active animal with that ID.");
             }
 
             await _animalToCareRepository.RemoveAsync(animalToDelete);
