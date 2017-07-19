@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Pets.Core.Repositories;
 using Pets.Infrastructure.Repositories;
 using Pets.Infrastructure.Services;
+using Pets.Infrastructure.EF;
 
 namespace Pets.Api
 {
@@ -28,17 +29,15 @@ namespace Pets.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddDbContext<InMemoryUserRepository>(opt => opt.UseInMemoryDatabase());
-            services.AddDbContext<InMemoryAnimalRepository>(opt => opt.UseInMemoryDatabase());
-            services.AddDbContext<InMemoryAnimalToCareRepository>(opt => opt.UseInMemoryDatabase());
+            services.AddDbContext<PetsContext>(opt => opt.UseInMemoryDatabase());
 
-            services.AddScoped<IUserRepository, InMemoryUserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
 
-            services.AddScoped<IAnimalRepository, InMemoryAnimalRepository>();
+            services.AddScoped<IAnimalRepository, AnimalRepository>();
             services.AddScoped<IAnimalService, AnimalService>();
 
-            services.AddScoped<IAnimalToCareRepository, InMemoryAnimalToCareRepository>();
+            services.AddScoped<IAnimalToCareRepository, AnimalToCareRepository>();
             services.AddScoped<IAnimalToCareService, AnimalToCareService>();
             services.AddMvc();
         }
