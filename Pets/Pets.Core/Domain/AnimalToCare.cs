@@ -7,6 +7,8 @@ namespace Pets.Core.Domain
         public Guid Id { get; protected set; }
         public Guid AnimalId { get; protected set; }
         public Animal Animal { get; protected set; }
+        public Guid UserId { get; protected set; }
+        public User User { get; protected set; }
         public DateTime DateFrom { get; protected set; }
         public DateTime DateTo { get; protected set; }
         public bool IsTaken { get; protected set; }
@@ -19,6 +21,7 @@ namespace Pets.Core.Domain
         {
             Id = Guid.NewGuid();
             AnimalId = animalId;
+            UserId = Guid.Empty;
             DateFrom = dateFrom;
             DateTo = dateTo;
             IsTaken = false;
@@ -37,6 +40,11 @@ namespace Pets.Core.Domain
         public void SetDateTo(DateTime dateTo)
         {
             DateTo = dateTo;
+        }
+
+        public void SetUserId(Guid userId)
+        {
+            UserId = userId;
         }
     }
 }

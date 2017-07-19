@@ -10,6 +10,7 @@ namespace Pets.Core.Repositories
         Task<IEnumerable<AnimalToCare>> GetAsync(Guid animalId);
         Task<IEnumerable<AnimalToCare>> GetAllActiveAsync();
         Task<IEnumerable<AnimalToCare>> GetAllArchiveAsync();
+        Task<IEnumerable<AnimalToCare>> GetAnimalsCaringByUserAsync(Guid userId);
 
         Task AddAsync(AnimalToCare animalToCare);
         Task UpdateAsync(AnimalToCare animalToCare);

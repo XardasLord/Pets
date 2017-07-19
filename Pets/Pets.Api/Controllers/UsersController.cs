@@ -19,23 +19,31 @@ namespace Pets.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserDto>> Get()
+        public async Task<IEnumerable<UserDto>> GetAllUsers()
         {
             return await _userService.GetAllAsync();
         }
         
         [HttpGet("{email}")]
-        public async Task<IActionResult> Get(string email)
+        public async Task<IActionResult> GetUserByEmail(string email)
         {
             var user = await _userService.GetAsync(email);
-            if(user == null)
-            {
-                return NotFound();
-            }
 
             return Json(user);
         }
-        
+
+        [HttpGet("{email}/animals_to_care")]
+        public async Task<IEnumerable<AnimalToCareDto>> GetAnimalsCaringByUser(string email)
+        {
+            return await _userService.GetCaringAnimalsAsync(email);
+        }
+
+        //[HttpGet("{email}/animals_to_care/archive")]
+        //public async Task<IEnumerable<AnimalToCareDto>> GetAnimalsCaringByUserArchive(string email)
+        //{
+        //    return await _userService.GetCaringAnimalsAsync(email);
+        //}
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]CreateUser request)
         {

@@ -13,7 +13,7 @@ namespace Pets.Infrastructure.Services
         Task<IEnumerable<AnimalToCareDto>> GetAllArchiveAsync();
 
         Task AddToCareListAsync(Guid animalId, DateTime dateFrom, DateTime dateTo);
-        Task GetAnimalToCareAsync(Guid animalId);
+        Task GetAnimalToCareAsync(Guid animalId, Guid userId);
         Task UpdateAsync(Guid animalId, DateTime dateFrom, DateTime dateTo, bool isTaken);
         Task DeleteAsync(Guid animalId);
     }

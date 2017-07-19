@@ -29,7 +29,9 @@ namespace Pets.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddDbContext<PetsContext>(opt => opt.UseInMemoryDatabase());
+            services.AddEntityFrameworkSqlServer()
+                .AddEntityFrameworkInMemoryDatabase()
+                .AddDbContext<PetsContext>(opt => opt.UseSqlServer("Server=XARDASLORD\\SQLEXPRESS;Database=Pets;Integrated Security=SSPI;"));
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
@@ -39,6 +41,7 @@ namespace Pets.Api
 
             services.AddScoped<IAnimalToCareRepository, AnimalToCareRepository>();
             services.AddScoped<IAnimalToCareService, AnimalToCareService>();
+
             services.AddMvc();
         }
 

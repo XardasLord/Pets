@@ -12,12 +12,15 @@ namespace Pets.Infrastructure.Services
     {
         IAnimalToCareRepository _animalToCareRepository;
         IAnimalRepository _animalRepository;
+        IUserRepository _userRepository;
 
         public AnimalToCareService(IAnimalToCareRepository animalToCareRepository,
-            IAnimalRepository animalRepository)
+            IAnimalRepository animalRepository,
+            IUserRepository userRepository)
         {
             _animalToCareRepository = animalToCareRepository;
             _animalRepository = animalRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<AnimalToCareDto>> GetAllActiveAsync()
@@ -117,7 +120,7 @@ namespace Pets.Infrastructure.Services
             await _animalToCareRepository.AddAsync(animalToCare);
         }
 
-        public async Task GetAnimalToCareAsync(Guid animalId)
+        public async Task GetAnimalToCareAsync(Guid animalId, Guid userId)
         {
             var animalToGet = await GetActiveAnimalToCareById(animalId);
             if (animalToGet == null)
@@ -125,8 +128,16 @@ namespace Pets.Infrastructure.Services
                 throw new Exception("Animal with given ID is not available to get, because there is no active animal with that ID.");
             }
 
-            //TODO: Connect Animal with user in `CaringAnimal`.
+            var user = await _userRepository.GetAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User with given ID does not exist.");
+            }
 
+            animalToGet.SetUserId(user.Id);
+            animalToGet.SetIsTaken(true);
+
+            await _animalToCareRepository.UpdateAsync(animalToGet);
         }
 
         public async Task DeleteAsync(Guid animalId)

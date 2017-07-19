@@ -13,5 +13,33 @@ namespace Pets.Infrastructure.EF
             : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>().HasKey(x => x.Id);
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.Animals)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.AnimalsToCare)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<Animal>().HasKey(x => x.Id);
+            modelBuilder.Entity<Animal>()
+                .HasMany(x => x.AnimalsToCare)
+                .WithOne(x => x.Animal)
+                .HasForeignKey(x => x.AnimalId);
+
+            modelBuilder.Entity<AnimalToCare>().HasKey(x => x.Id);
+
+
+            //modelBuilder.Entity<CaringAnimal>().HasKey(x => x.Id);
+            //modelBuilder.Entity<CaringAnimal>()
+            //    .HasOne(x => x.User)
+            //    .WithMany(x => x.CaringAnimals)
+            //    .HasForeignKey(x => x.UserId);
+        }
     }
 }

@@ -49,11 +49,16 @@ namespace Pets.Api.Controllers
             return NoContent();
         }
 
-        [HttpPost("care/{animalId}")]
-        public async Task<IActionResult> Post(Guid animalId)
+        [HttpPost("care")]
+        public async Task<IActionResult> Post([FromBody]GetAnimalToCare request)
         {
-            //Getting care of animal by the user - send POST request.
-            await _animalToCareService.GetAnimalToCareAsync(animalId);
+            if(request == null)
+            {
+                return NotFound();
+            }
+
+            //TODO: Getting care of animal by the user - send POST request.
+            await _animalToCareService.GetAnimalToCareAsync(request.AnimalId, request.UserId);
 
             return NoContent();
         }

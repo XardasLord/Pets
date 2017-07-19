@@ -1,17 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pets.Core", "Pets.Core\Pets.Core.csproj", "{8BD90D5F-301F-49ED-8D9B-FEAF8C551DFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pets.Core", "Pets.Core\Pets.Core.csproj", "{8BD90D5F-301F-49ED-8D9B-FEAF8C551DFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pets.Infrastructure", "Pets.Infrastructure\Pets.Infrastructure.csproj", "{C12A4995-77D0-4B71-BD8C-E0F26823AB27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pets.Infrastructure", "Pets.Infrastructure\Pets.Infrastructure.csproj", "{C12A4995-77D0-4B71-BD8C-E0F26823AB27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pets.Api", "Pets.Api\Pets.Api.csproj", "{1BC53DDE-713E-4C80-8589-A4811A676A30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pets.Api", "Pets.Api\Pets.Api.csproj", "{1BC53DDE-713E-4C80-8589-A4811A676A30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pets.Tests", "Pets.Tests\Pets.Tests.csproj", "{7BBB5255-E4E5-4F82-9203-68DF06E81892}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pets.Tests", "Pets.Tests\Pets.Tests.csproj", "{7BBB5255-E4E5-4F82-9203-68DF06E81892}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pets.Tests.EndToEnd", "Pets.Tests.EndToEnd\Pets.Tests.EndToEnd.csproj", "{2587E50D-E39D-40CB-BEBE-5547C8A33D54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pets.Tests.EndToEnd", "Pets.Tests.EndToEnd\Pets.Tests.EndToEnd.csproj", "{2587E50D-E39D-40CB-BEBE-5547C8A33D54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB Scripts", "DB Scripts", "{90C3166C-6C25-48E2-81F1-BA07EFE0F02D}"
+	ProjectSection(SolutionItems) = preProject
+		Create tables.sql = Create tables.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

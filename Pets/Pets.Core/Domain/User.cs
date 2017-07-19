@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Pets.Core.Domain
 {
@@ -11,6 +12,9 @@ namespace Pets.Core.Domain
         public string FirstName { get; protected set; }
         public string LastName { get; protected set; }
         public DateTime CreatedAt { get; protected set; }
+
+        public IEnumerable<Animal> Animals { get; protected set; }
+        public IEnumerable<AnimalToCare> AnimalsToCare { get; protected set; }
 
         protected User()
         {

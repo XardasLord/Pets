@@ -10,10 +10,13 @@ namespace Pets.Infrastructure.Services
     public class UserService : IUserService
     {
         private IUserRepository _userRepository;
+        private IAnimalToCareRepository _animalToCareRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository,
+            IAnimalToCareRepository animalToCareRepository)
         {
             _userRepository = userRepository;
+            _animalToCareRepository = animalToCareRepository;
         }
 
         public async Task<IEnumerable<UserDto>> GetAllAsync()
@@ -41,7 +44,7 @@ namespace Pets.Infrastructure.Services
             var user = await _userRepository.GetAsync(email);
             if(user == null)
             {
-                return null;
+                throw new Exception($"User with email: {email} doesn't exist.");
             }
 
             var userDto = new UserDto
@@ -54,6 +57,27 @@ namespace Pets.Infrastructure.Services
             };
 
             return userDto;
+        }
+
+        public async Task<IEnumerable<AnimalToCareDto>> GetCaringAnimalsAsync(string email)
+        {
+            var user = await GetAsync(email);
+            var animalsToCare = await _animalToCareRepository.GetAnimalsCaringByUserAsync(user.Id);
+
+            var animalsToCareDto = new HashSet<AnimalToCareDto>();
+
+            foreach (var animal in animalsToCare)
+            {
+                animalsToCareDto.Add(new AnimalToCareDto
+                {
+                    Id = animal.Id,
+                    DateFrom = animal.DateFrom,
+                    DateTo = animal.DateTo,
+                    IsTaken = animal.IsTaken
+                });
+            }
+
+            return animalsToCareDto;
         }
 
         public async Task UpdateAsync(string email, string firstName, string lastName, string password)

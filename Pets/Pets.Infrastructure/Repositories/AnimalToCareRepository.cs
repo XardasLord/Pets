@@ -38,6 +38,14 @@ namespace Pets.Infrastructure.Repositories
             return await Task.FromResult(_context.AnimalsToCare.Where(x => x.AnimalId == animalId).ToList());
         }
 
+        public async Task<IEnumerable<AnimalToCare>> GetAnimalsCaringByUserAsync(Guid userId)
+        {
+            return await Task.FromResult(
+                _context.AnimalsToCare
+                .Where(x => x.IsTaken == true && x.UserId == userId && x.DateTo >= DateTime.UtcNow)
+                .ToList());
+        }
+
         public async Task RemoveAsync(AnimalToCare animalToCare)
         {
             _context.AnimalsToCare.Remove(animalToCare);
