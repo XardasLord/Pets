@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Pets.Infrastructure.Commands.Users;
 using Pets.Infrastructure.DTO;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -56,12 +57,10 @@ namespace Pets.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task given_invalid_email_user_should_return_NotFound_404_status_code()
+        public async Task given_invalid_email_user_should_throw_exception()
         {
-            var email = "user1000@email.pl";
-            var response = await _client.GetAsync($"users/{email}");
-
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NotFound);
+            await Assert.ThrowsAnyAsync<Exception>(
+                async () => await _client.GetAsync($"users/{_nonExistingUser.Email}"));
         }
 
         [Fact]
@@ -110,32 +109,29 @@ namespace Pets.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task update_user_data_on_non_existing_email_should_return_NotFound_404_status_code()
+        public async Task update_user_data_on_non_existing_email_should_throw_exception()
         {
             var payload = GetPayload(_nonExistingUser);
 
-            var response = await _client.PutAsync($"users/{_nonExistingUser.Email}", payload);
-
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NotFound);
+            await Assert.ThrowsAnyAsync<Exception>(
+                async () => await _client.PutAsync($"users/{_nonExistingUser.Email}", payload));
         }
 
         [Fact]
-        public async Task delete_user_on_existing_email_should_return_NoContent_204_status_code_and_should_no_more_exist()
+        public async Task delete_user_on_existing_email_should_return_NoContent_204_status_code_and_getting_that_user_shoud_throw_exception()
         {
             var response = await _client.DeleteAsync($"users/{_existingUserForDelete.Email}");
 
             response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NoContent);
 
-            response = await _client.GetAsync($"users/{_existingUserForDelete.Email}");
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NotFound);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await _client.GetAsync($"users/{_existingUserForDelete.Email}"));
         }
 
         [Fact]
-        public async Task delete_user_on_non_existing_email_should_return_NotFound_404_status_code()
+        public async Task delete_user_on_non_existing_email_should_throw_exception()
         {
-            var response = await _client.DeleteAsync($"users/{_nonExistingUser.Email}");
-
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NotFound);
+            await Assert.ThrowsAnyAsync<Exception>(
+                async () => await _client.DeleteAsync($"users/{_nonExistingUser.Email}"));
         }
 
         private async Task<UserDto> GetUserAsync(string email)
