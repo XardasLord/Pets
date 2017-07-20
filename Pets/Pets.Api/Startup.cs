@@ -8,6 +8,7 @@ using Pets.Core.Repositories;
 using Pets.Infrastructure.Repositories;
 using Pets.Infrastructure.Services;
 using Pets.Infrastructure.EF;
+using Pets.Infrastructure.Settings;
 
 namespace Pets.Api
 {
@@ -31,7 +32,10 @@ namespace Pets.Api
             // Add framework services.
             services.AddEntityFrameworkSqlServer()
                 .AddEntityFrameworkInMemoryDatabase()
-                .AddDbContext<PetsContext>(opt => opt.UseSqlServer("Server=XARDASLORD\\SQLEXPRESS;Database=Pets;Integrated Security=SSPI;"));
+                .AddDbContext<PetsContext>();
+
+            // Register the IConfiguration instance which MyOptions binds against.
+            services.Configure<MyOptions>(Configuration);
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();

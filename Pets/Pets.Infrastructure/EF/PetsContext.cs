@@ -1,17 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Pets.Core.Domain;
+using Pets.Infrastructure.Settings;
 
 namespace Pets.Infrastructure.EF
 {
     public class PetsContext : DbContext
     {
+        private readonly MyOptions _options;
+
         public DbSet<User> Users { get; set; }
         public DbSet<Animal> Animals { get; set; }
         public DbSet<AnimalToCare> AnimalsToCare { get; set; }
 
-        public PetsContext(DbContextOptions<PetsContext> options)
+        public PetsContext(DbContextOptions<PetsContext> options, IOptions<MyOptions> optionsAccessor)
             : base(options)
         {
+            _options = optionsAccessor.Value;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (_options.InMemoryDatabase)
+            {
+                optionsBuilder.UseInMemoryDatabase();
+
+                return;
+            }
+            //"Server=XARDASLORD\\SQLEXPRESS;Database=Pets;Integrated Security=SSPI;"
+            optionsBuilder.UseSqlServer(_options.SqlConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,13 +50,6 @@ namespace Pets.Infrastructure.EF
                 .HasForeignKey(x => x.AnimalId);
 
             modelBuilder.Entity<AnimalToCare>().HasKey(x => x.Id);
-
-
-            //modelBuilder.Entity<CaringAnimal>().HasKey(x => x.Id);
-            //modelBuilder.Entity<CaringAnimal>()
-            //    .HasOne(x => x.User)
-            //    .WithMany(x => x.CaringAnimals)
-            //    .HasForeignKey(x => x.UserId);
         }
     }
 }
