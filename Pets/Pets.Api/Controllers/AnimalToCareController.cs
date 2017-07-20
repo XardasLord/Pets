@@ -36,15 +36,15 @@ namespace Pets.Api.Controllers
             return await _animalToCareService.GetAsync(animalId);
         }
 
-        [HttpPost("add/{animalId}")]
-        public async Task<IActionResult> Post(Guid animalId, [FromBody]CreateAnimalToCare request)
+        [HttpPost("add")]
+        public async Task<IActionResult> Post([FromBody]CreateAnimalToCare request)
         {
             if(request == null)
             {
                 return NotFound();
             }
 
-            await _animalToCareService.AddToCareListAsync(animalId, request.DateFrom, request.DateTo);
+            await _animalToCareService.AddToCareListAsync(request.AnimalId, request.DateFrom, request.DateTo);
 
             return NoContent();
         }

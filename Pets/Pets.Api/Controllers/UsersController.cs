@@ -38,11 +38,11 @@ namespace Pets.Api.Controllers
             return await _userService.GetCaringAnimalsAsync(email);
         }
 
-        //[HttpGet("{email}/animals_to_care/archive")]
-        //public async Task<IEnumerable<AnimalToCareDto>> GetAnimalsCaringByUserArchive(string email)
-        //{
-        //    return await _userService.GetCaringAnimalsAsync(email);
-        //}
+        [HttpGet("{email}/animals_to_care/archive")]
+        public async Task<IEnumerable<AnimalToCareDto>> GetAnimalsCaringByUserArchive(string email)
+        {
+            return await _userService.GetCaringAnimalsArchiveAsync(email);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]CreateUser request)

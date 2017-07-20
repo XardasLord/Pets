@@ -80,6 +80,27 @@ namespace Pets.Infrastructure.Services
             return animalsToCareDto;
         }
 
+        public async Task<IEnumerable<AnimalToCareDto>> GetCaringAnimalsArchiveAsync(string email)
+        {
+            var user = await GetAsync(email);
+            var animalsToCare = await _animalToCareRepository.GetAnimalsCaringByUserArchiveAsync(user.Id);
+
+            var animalsToCareDto = new HashSet<AnimalToCareDto>();
+
+            foreach (var animal in animalsToCare)
+            {
+                animalsToCareDto.Add(new AnimalToCareDto
+                {
+                    Id = animal.Id,
+                    DateFrom = animal.DateFrom,
+                    DateTo = animal.DateTo,
+                    IsTaken = animal.IsTaken
+                });
+            }
+
+            return animalsToCareDto;
+        }
+
         public async Task UpdateAsync(string email, string firstName, string lastName, string password)
         {
             var user = await _userRepository.GetAsync(email);

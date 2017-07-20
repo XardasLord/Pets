@@ -9,6 +9,7 @@ namespace Pets.Infrastructure.Services
         Task<UserDto> GetAsync(string email);
         Task<IEnumerable<UserDto>> GetAllAsync();
         Task<IEnumerable<AnimalToCareDto>> GetCaringAnimalsAsync(string email);
+        Task<IEnumerable<AnimalToCareDto>> GetCaringAnimalsArchiveAsync(string email);
         Task UpdateAsync(string email, string firstName, string lastName, string password);
         Task DeleteAsync(string email);
         Task RegisterAsync(string email, string firstName, string lastName, string password);
