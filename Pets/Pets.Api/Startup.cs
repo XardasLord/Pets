@@ -46,6 +46,8 @@ namespace Pets.Api
             services.AddScoped<IAnimalToCareRepository, AnimalToCareRepository>();
             services.AddScoped<IAnimalToCareService, AnimalToCareService>();
 
+            services.AddScoped<IEncrypter, Encrypter>();
+
             services.AddMvc();
         }
 

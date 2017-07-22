@@ -9,14 +9,17 @@ namespace Pets.Infrastructure.Services
 {
     public class UserService : IUserService
     {
-        private IUserRepository _userRepository;
-        private IAnimalToCareRepository _animalToCareRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IAnimalToCareRepository _animalToCareRepository;
+        private readonly IEncrypter _encrypter;
 
         public UserService(IUserRepository userRepository,
-            IAnimalToCareRepository animalToCareRepository)
+            IAnimalToCareRepository animalToCareRepository, 
+            IEncrypter encrypter)
         {
             _userRepository = userRepository;
             _animalToCareRepository = animalToCareRepository;
+            _encrypter = encrypter;
         }
 
         public async Task<IEnumerable<UserDto>> GetAllAsync()
@@ -136,7 +139,13 @@ namespace Pets.Infrastructure.Services
                 throw new Exception("Invalid credentials.");
             }
 
-            //TODO: Login functionality
+            var hash = _encrypter.GetHash(password, user.Salt);
+            if (user.Password == hash)
+            {
+                return;
+            }
+
+            throw new Exception("Invalid credentials");
         }
 
         public async Task RegisterAsync(string email, string firstName, string lastName, string password)
@@ -146,10 +155,11 @@ namespace Pets.Infrastructure.Services
             {
                 throw new Exception($"User with email: {user.Email} already exists.");
             }
+            
+            var salt = _encrypter.GetSalt(password);
+            var hash = _encrypter.GetHash(password, salt);
+            user = new User(Guid.NewGuid(), email, firstName, lastName, hash, salt);
 
-            //TODO: Generate salt for password
-            var salt = "salt";
-            user = new User(Guid.NewGuid(), email, firstName, lastName, password, salt);
             await _userRepository.AddAsync(user);
         }
     }
