@@ -84,11 +84,9 @@ namespace Pets.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task given_email_to_register_which_already_exists_should_return_409_status_code()
+        public async Task given_email_to_register_which_already_exists_should_throw_an_exception()
         {
-            var response = await RegisterUserAsync(_existingUser);
-
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.Conflict);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await RegisterUserAsync(_existingUser));
         }
 
         [Fact]
@@ -109,7 +107,7 @@ namespace Pets.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task update_user_data_on_non_existing_email_should_throw_exception()
+        public async Task update_user_data_on_non_existing_email_should_throw_an_exception()
         {
             var payload = GetPayload(_nonExistingUser);
 
@@ -118,7 +116,7 @@ namespace Pets.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task delete_user_on_existing_email_should_return_NoContent_204_status_code_and_getting_that_user_shoud_throw_exception()
+        public async Task delete_user_on_existing_email_should_return_NoContent_204_status_code_and_getting_that_user_should_throw_an_exception()
         {
             var response = await _client.DeleteAsync($"users/{_existingUserForDelete.Email}");
 
@@ -128,7 +126,7 @@ namespace Pets.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task delete_user_on_non_existing_email_should_throw_exception()
+        public async Task delete_user_on_non_existing_email_should_throw_an_exception()
         {
             await Assert.ThrowsAnyAsync<Exception>(
                 async () => await _client.DeleteAsync($"users/{_nonExistingUser.Email}"));
@@ -150,7 +148,7 @@ namespace Pets.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task login_user_with_incorrect_data_should_throw_exception()
+        public async Task login_user_with_incorrect_data_should_throw_an_exception()
         {
             var request = new LogInUser
             {

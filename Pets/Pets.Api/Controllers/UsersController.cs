@@ -87,15 +87,8 @@ namespace Pets.Api.Controllers
                 return BadRequest();
             }
 
-            try
-            {
-                await _userService.RegisterAsync(request.Email, request.FirstName, request.LastName, request.Password);
-            }
-            catch(Exception e)
-            {
-                return StatusCode(409, e.Message);
-            }
-            
+            await _userService.RegisterAsync(request.Email, request.FirstName, request.LastName, request.Password);
+
             return Created($"users/{request.Email}", new object());
         }
         
@@ -111,16 +104,9 @@ namespace Pets.Api.Controllers
             {
                 return NotFound();
             }
-
-            try
-            {
-                await _userService.UpdateAsync(request.Email, request.FirstName, request.LastName, request.Password);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(409, e.Message);
-            }
-
+            
+            await _userService.UpdateAsync(request.Email, request.FirstName, request.LastName, request.Password);
+            
             return NoContent();
         }
         
