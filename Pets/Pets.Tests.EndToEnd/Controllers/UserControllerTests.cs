@@ -134,6 +134,42 @@ namespace Pets.Tests.EndToEnd.Controllers
                 async () => await _client.DeleteAsync($"users/{_nonExistingUser.Email}"));
         }
 
+        [Fact]
+        public async Task login_user_with_correct_data_should_return_302_status_code()
+        {
+            var request = new LogInUser
+            {
+                Email = _existingUser.Email,
+                Password = _existingUser.Password
+            };
+            var payload = GetPayload(request);
+
+            var response = await _client.PostAsync($"users/login", payload);
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.Found);
+        }
+
+        [Fact]
+        public async Task login_user_with_incorrect_data_should_throw_exception()
+        {
+            var request = new LogInUser
+            {
+                Email = _existingUser.Email,
+                Password = "wrongPassword"
+            };
+            var payload = GetPayload(request);
+
+            await Assert.ThrowsAnyAsync<Exception>(async () => await _client.PostAsync($"users/login", payload));
+        }
+
+        [Fact]
+        public async Task logout_user_should_return_200_status_code()
+        {
+            var response = await _client.GetAsync($"users/logout");
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.OK);
+        }
+
         private async Task<UserDto> GetUserAsync(string email)
         {
             var response = await _client.GetAsync($"users/{email}");

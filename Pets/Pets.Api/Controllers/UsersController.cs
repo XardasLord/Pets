@@ -4,6 +4,7 @@ using Pets.Infrastructure.DTO;
 using Pets.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Pets.Api.Controllers
@@ -42,6 +43,40 @@ namespace Pets.Api.Controllers
         public async Task<IEnumerable<AnimalToCareDto>> GetAnimalsCaringByUserArchive(string email)
         {
             return await _userService.GetCaringAnimalsArchiveAsync(email);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody]LogInUser request)
+        {
+            if (request == null)
+            {
+                return BadRequest();
+            }
+
+            if (await _userService.LoginAsync(request.Email, request.Password))
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Email, request.Email)
+                };
+
+                var userIdentity = new ClaimsIdentity(claims, "login");
+
+                ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
+                await HttpContext.Authentication.SignInAsync("CookieAuthentication", principal);
+
+                return StatusCode(302);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout()
+        {
+	        await HttpContext.Authentication.SignOutAsync("CookieAuthentication");
+            return Ok();
+	        //return Redirect("/users/login");
         }
 
         [HttpPost]

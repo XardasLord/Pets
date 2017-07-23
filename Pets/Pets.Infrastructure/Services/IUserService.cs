@@ -13,6 +13,6 @@ namespace Pets.Infrastructure.Services
         Task UpdateAsync(string email, string firstName, string lastName, string password);
         Task DeleteAsync(string email);
         Task RegisterAsync(string email, string firstName, string lastName, string password);
-        Task LoginAsync(string email, string password);
+        Task<bool> LoginAsync(string email, string password);
     }
 }

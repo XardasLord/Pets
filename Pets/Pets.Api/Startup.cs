@@ -9,6 +9,7 @@ using Pets.Infrastructure.Repositories;
 using Pets.Infrastructure.Services;
 using Pets.Infrastructure.EF;
 using Pets.Infrastructure.Settings;
+using Microsoft.AspNetCore.Http;
 
 namespace Pets.Api
 {
@@ -56,6 +57,15 @@ namespace Pets.Api
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            {
+                AuthenticationScheme = "CookieAuthentication",
+                LoginPath = new PathString("/users/login"),
+                //AccessDeniedPath = new PathString("/Account/Forbidden/"),
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true
+            });
 
             app.UseMvc();
         }

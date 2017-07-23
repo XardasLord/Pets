@@ -131,7 +131,7 @@ namespace Pets.Infrastructure.Services
             await _userRepository.RemoveAsync(user.Id);
         }
 
-        public async Task LoginAsync(string email, string password)
+        public async Task<bool> LoginAsync(string email, string password)
         {
             var user = await _userRepository.GetAsync(email);
             if (user == null)
@@ -142,7 +142,7 @@ namespace Pets.Infrastructure.Services
             var hash = _encrypter.GetHash(password, user.Salt);
             if (user.Password == hash)
             {
-                return;
+                return true;
             }
 
             throw new Exception("Invalid credentials");
