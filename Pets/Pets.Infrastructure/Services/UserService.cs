@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Pets.Infrastructure.DTO;
 using Pets.Core.Repositories;
 using Pets.Core.Domain;
+using Pets.Infrastructure.Extensions;
 
 namespace Pets.Infrastructure.Services
 {
@@ -44,11 +45,7 @@ namespace Pets.Infrastructure.Services
 
         public async Task<UserDto> GetAsync(string email)
         {
-            var user = await _userRepository.GetAsync(email);
-            if(user == null)
-            {
-                throw new Exception($"User with email: {email} doesn't exist.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
 
             var userDto = new UserDto
             {
@@ -106,11 +103,7 @@ namespace Pets.Infrastructure.Services
 
         public async Task UpdateAsync(string email, string firstName, string lastName, string password)
         {
-            var user = await _userRepository.GetAsync(email);
-            if(user == null)
-            {
-                throw new Exception($"User with email: {email} doesn't exist.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
 
             user.SetEmail(email);
             user.SetFirstName(firstName);
@@ -122,22 +115,14 @@ namespace Pets.Infrastructure.Services
 
         public async Task DeleteAsync(string email)
         {
-            var user = await _userRepository.GetAsync(email);
-            if (user == null)
-            {
-                throw new Exception($"User with email: {email} doesn't exist.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
 
             await _userRepository.RemoveAsync(user.Id);
         }
 
         public async Task<bool> LoginAsync(string email, string password)
         {
-            var user = await _userRepository.GetAsync(email);
-            if (user == null)
-            {
-                throw new Exception("Invalid credentials.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
 
             var hash = _encrypter.GetHash(password, user.Salt);
             if (user.Password == hash)

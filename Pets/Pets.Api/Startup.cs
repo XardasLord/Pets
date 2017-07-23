@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 using Pets.Core.Repositories;
 using Pets.Infrastructure.Repositories;
 using Pets.Infrastructure.Services;
 using Pets.Infrastructure.EF;
 using Pets.Infrastructure.Settings;
 using Microsoft.AspNetCore.Http;
+using Pets.Api.Framework;
 
 namespace Pets.Api
 {
@@ -66,6 +66,8 @@ namespace Pets.Api
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true
             });
+
+            app.UseExceptionHandlerCustom();
 
             app.UseMvc();
         }

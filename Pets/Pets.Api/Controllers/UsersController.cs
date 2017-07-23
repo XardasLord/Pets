@@ -76,7 +76,6 @@ namespace Pets.Api.Controllers
         {
 	        await HttpContext.Authentication.SignOutAsync("CookieAuthentication");
             return Ok();
-	        //return Redirect("/users/login");
         }
 
         [HttpPost]

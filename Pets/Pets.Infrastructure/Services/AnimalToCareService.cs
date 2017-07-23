@@ -5,6 +5,7 @@ using Pets.Infrastructure.DTO;
 using Pets.Core.Repositories;
 using System.Linq;
 using Pets.Core.Domain;
+using Pets.Infrastructure.Extensions;
 
 namespace Pets.Infrastructure.Services
 {
@@ -95,11 +96,7 @@ namespace Pets.Infrastructure.Services
 
         public async Task AddToCareListAsync(Guid animalId, DateTime dateFrom, DateTime dateTo)
         {
-            var animal = await _animalRepository.GetAsync(animalId);
-            if (animal == null)
-            {
-                throw new Exception("Animal of given ID doesn't exist.");
-            }
+            var animal = await _animalRepository.GetOrFailAsync(animalId);
 
             var animalToCare = new AnimalToCare(animal.Id, dateFrom, dateTo);
 
@@ -114,12 +111,7 @@ namespace Pets.Infrastructure.Services
                 throw new Exception("Animal with given ID is not available to get, because there is no active animal with that ID.");
             }
 
-            var user = await _userRepository.GetAsync(userId);
-            if (user == null)
-            {
-                throw new Exception("User with given ID does not exist.");
-            }
-
+            var user = await _userRepository.GetOrFailAsync(userId);
             animalToGet.SetUserId(user.Id);
             animalToGet.SetIsTaken(true);
 
@@ -128,8 +120,6 @@ namespace Pets.Infrastructure.Services
 
         public async Task DeleteAsync(Guid animalId)
         {
-            //TODO: Check if the user who wants to delete information is the owner of that animal.
-
             var animalToDelete = await GetActiveAnimalToCareById(animalId);
             if(animalToDelete == null)
             {

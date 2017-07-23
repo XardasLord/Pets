@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Pets.Infrastructure.DTO;
 using Pets.Core.Repositories;
 using Pets.Core.Domain;
+using Pets.Infrastructure.Extensions;
 
 namespace Pets.Infrastructure.Services
 {
@@ -24,12 +25,7 @@ namespace Pets.Infrastructure.Services
         
         public async Task<AnimalDto> GetAsync(Guid animalId)
         {
-            var animal = await _animalRepository.GetAsync(animalId);
-            if (animal == null)
-            {
-                throw new Exception($"Animal with id {animalId} does not exist.");
-            }
-
+            var animal = await _animalRepository.GetOrFailAsync(animalId);
             var user = await _userRepository.GetAsync(animal.UserId);
             var userDto = await _userService.GetAsync(user.Email);
 
@@ -44,17 +40,8 @@ namespace Pets.Infrastructure.Services
 
         public async Task<AnimalDto> GetAsync(string email, string name)
         {
-            var user = await _userRepository.GetAsync(email);
-            if (user == null)
-            {
-                throw new Exception($"User with email {email} does not exist.");
-            }
-
-            var animal = await _animalRepository.GetAsync(user.Id, name);
-            if (animal == null)
-            {
-                throw new Exception($"Animal with name {name} does not exist for this user.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
+            var animal = await _animalRepository.GetOrFailAsync(user.Id, name);
 
             var userDto = await _userService.GetAsync(email);
 
@@ -69,11 +56,7 @@ namespace Pets.Infrastructure.Services
 
         public async Task<IEnumerable<AnimalDto>> GetAllAsync(string email)
         {
-            var user = await _userRepository.GetAsync(email);
-            if (user == null)
-            {
-                throw new Exception($"User with email {email} does not exist.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
 
             var animals = await _animalRepository.GetAllAsync(user.Id);
             var animalsDto = new HashSet<AnimalDto>();
@@ -96,17 +79,8 @@ namespace Pets.Infrastructure.Services
 
         public async Task AddAsync(string email, string name, int yearOfBirth)
         {
-            var user = await _userRepository.GetAsync(email);
-            if (user == null)
-            {
-                throw new Exception($"User with email {email} does not exist.");
-            }
-
-            var animal = await _animalRepository.GetAsync(user.Id, name);
-            if (animal != null)
-            {
-                throw new Exception($"Animal with name {name} already exists for this user.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
+            var animal = await _animalRepository.GetOrFailAsync(user.Id, name);
 
             var newAnimal = new Animal(user.Id, name);
             newAnimal.SetYearOfBirth(yearOfBirth);
@@ -116,34 +90,16 @@ namespace Pets.Infrastructure.Services
 
         public async Task DeleteAsync(string email, string name)
         {
-            var user = await _userRepository.GetAsync(email);
-            if (user == null)
-            {
-                throw new Exception($"User with email {email} does not exist.");
-            }
-
-            var animal = await _animalRepository.GetAsync(user.Id, name);
-            if (animal == null)
-            {
-                throw new Exception($"Animal with name {name} does not exist for this user.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
+            var animal = await _animalRepository.GetOrFailAsync(user.Id, name);
 
             await _animalRepository.RemoveAsync(animal.Id);
         }
 
         public async Task UpdateAsync(string email, string oldName, string newName, int yearOfBirth)
         {
-            var user = await _userRepository.GetAsync(email);
-            if (user == null)
-            {
-                throw new Exception($"User with email {email} does not exist.");
-            }
-
-            var animal = await _animalRepository.GetAsync(user.Id, oldName);
-            if (animal == null)
-            {
-                throw new Exception($"Animal with name {oldName} does not exist for this user.");
-            }
+            var user = await _userRepository.GetOrFailAsync(email);
+            var animal = await _animalRepository.GetOrFailAsync(user.Id, oldName);
 
             animal.SetName(newName);
             animal.SetYearOfBirth(yearOfBirth);

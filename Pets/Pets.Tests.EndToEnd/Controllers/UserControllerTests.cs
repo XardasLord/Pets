@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Pets.Infrastructure.Commands.Users;
 using Pets.Infrastructure.DTO;
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -59,8 +58,9 @@ namespace Pets.Tests.EndToEnd.Controllers
         [Fact]
         public async Task given_invalid_email_user_should_throw_exception()
         {
-            await Assert.ThrowsAnyAsync<Exception>(
-                async () => await _client.GetAsync($"users/{_nonExistingUser.Email}"));
+            var response = await _client.GetAsync($"users/{_nonExistingUser.Email}");
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
         }
 
         [Fact]
@@ -86,7 +86,9 @@ namespace Pets.Tests.EndToEnd.Controllers
         [Fact]
         public async Task given_email_to_register_which_already_exists_should_throw_an_exception()
         {
-            await Assert.ThrowsAnyAsync<Exception>(async () => await RegisterUserAsync(_existingUser));
+            var response = await RegisterUserAsync(_existingUser);
+            
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
         }
 
         [Fact]
@@ -111,25 +113,29 @@ namespace Pets.Tests.EndToEnd.Controllers
         {
             var payload = GetPayload(_nonExistingUser);
 
-            await Assert.ThrowsAnyAsync<Exception>(
-                async () => await _client.PutAsync($"users/{_nonExistingUser.Email}", payload));
+            var response = await _client.PutAsync($"users/{_nonExistingUser.Email}", payload);
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
+            //await Assert.ThrowsAnyAsync<Exception>(
+            //    async () => await _client.PutAsync($"users/{_nonExistingUser.Email}", payload));
         }
 
         [Fact]
         public async Task delete_user_on_existing_email_should_return_NoContent_204_status_code_and_getting_that_user_should_throw_an_exception()
         {
             var response = await _client.DeleteAsync($"users/{_existingUserForDelete.Email}");
-
             response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NoContent);
 
-            await Assert.ThrowsAnyAsync<Exception>(async () => await _client.GetAsync($"users/{_existingUserForDelete.Email}"));
+            response = await _client.GetAsync($"users/{_existingUserForDelete.Email}");
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
         }
 
         [Fact]
         public async Task delete_user_on_non_existing_email_should_throw_an_exception()
         {
-            await Assert.ThrowsAnyAsync<Exception>(
-                async () => await _client.DeleteAsync($"users/{_nonExistingUser.Email}"));
+            var response = await _client.DeleteAsync($"users/{_nonExistingUser.Email}");
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
         }
 
         [Fact]
@@ -157,7 +163,9 @@ namespace Pets.Tests.EndToEnd.Controllers
             };
             var payload = GetPayload(request);
 
-            await Assert.ThrowsAnyAsync<Exception>(async () => await _client.PostAsync($"users/login", payload));
+            var response = await _client.PostAsync($"users/login", payload);
+
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
         }
 
         [Fact]
