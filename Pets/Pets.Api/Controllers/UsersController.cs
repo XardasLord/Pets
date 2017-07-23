@@ -57,7 +57,7 @@ namespace Pets.Api.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Email, request.Email)
+                    new Claim(ClaimTypes.Name, request.Email)
                 };
 
                 var userIdentity = new ClaimsIdentity(claims, "login");

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pets.Infrastructure.Commands.AnimalToCare;
 using Pets.Infrastructure.DTO;
 using Pets.Infrastructure.Services;
@@ -12,10 +13,13 @@ namespace Pets.Api.Controllers
     public class AnimalToCareController : Controller
     {
         private readonly IAnimalToCareService _animalToCareService;
+        private readonly IAnimalService _animalService;
 
-        public AnimalToCareController(IAnimalToCareService animalToCareService)
+        public AnimalToCareController(IAnimalToCareService animalToCareService,
+            IAnimalService animalService)
         {
             _animalToCareService = animalToCareService;
+            _animalService = animalService;
         }
 
         [HttpGet]
@@ -36,6 +40,7 @@ namespace Pets.Api.Controllers
             return await _animalToCareService.GetAsync(animalId);
         }
 
+        [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> Post([FromBody]CreateAnimalToCare request)
         {
@@ -49,6 +54,7 @@ namespace Pets.Api.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPost("care")]
         public async Task<IActionResult> Post([FromBody]GetAnimalToCare request)
         {
@@ -63,20 +69,46 @@ namespace Pets.Api.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPut("{animalId}")]
         public async Task<IActionResult> Put(Guid animalId, [FromBody]UpdateAnimalToCare request)
         {
+            var animal = await _animalService.GetAsync(animalId);
+
+            if (animal.User.Email != await GetLoggedUserEmail())
+            {
+                throw new Exception("You can only edit animal to care information from your account.");
+            }
+
             await _animalToCareService.UpdateAsync(animalId, request.DateFrom, request.DateTo, request.IsTaken);
 
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{animalId}")]
         public async Task<IActionResult> Delete(Guid animalId)
         {
+            var animal = await _animalService.GetAsync(animalId);
+            
+            if (animal.User.Email != await GetLoggedUserEmail())
+            {
+                throw new Exception("You can only delete animal to care from your account.");
+            }
+
             await _animalToCareService.DeleteAsync(animalId);
 
             return NoContent();
+        }
+
+        public async Task<string> GetLoggedUserEmail()
+        {
+            if (HttpContext.User.Identity.Name == null)
+            {
+                throw new System.Exception("There is no logged user.");
+            }
+
+            return await Task.FromResult(HttpContext.User.Identity.Name);
         }
     }
 }

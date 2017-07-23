@@ -13,14 +13,17 @@ namespace Pets.Infrastructure.Services
         IAnimalToCareRepository _animalToCareRepository;
         IAnimalRepository _animalRepository;
         IUserRepository _userRepository;
+        IAnimalService _animalService;
 
         public AnimalToCareService(IAnimalToCareRepository animalToCareRepository,
             IAnimalRepository animalRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IAnimalService animalService)
         {
             _animalToCareRepository = animalToCareRepository;
             _animalRepository = animalRepository;
             _userRepository = userRepository;
+            _animalService = animalService;
         }
 
         public async Task<IEnumerable<AnimalToCareDto>> GetAllActiveAsync()
@@ -30,18 +33,13 @@ namespace Pets.Infrastructure.Services
 
             foreach(var animalToCare in animalsToCare)
             {
-                var animalDto = await _animalRepository.GetAsync(animalToCare.AnimalId);
+                var animalDto = await _animalService.GetAsync(animalToCare.AnimalId);
 
                 animals.Add(new AnimalToCareDto
                 {
+
                     Id = animalToCare.Id,
-                    Animal = new AnimalDto
-                    {
-                        Id = animalDto.Id,
-                        Name = animalDto.Name,
-                        UserId = animalDto.UserId,
-                        YearOfBirth = animalDto.YearOfBirth
-                    },
+                    Animal = animalDto,
                     DateFrom = animalToCare.DateFrom,
                     DateTo = animalToCare.DateTo,
                     IsTaken = animalToCare.IsTaken
@@ -58,18 +56,12 @@ namespace Pets.Infrastructure.Services
 
             foreach (var animalToCare in animalsToCare)
             {
-                var animalDto = await _animalRepository.GetAsync(animalToCare.AnimalId);
+                var animalDto = await _animalService.GetAsync(animalToCare.AnimalId);
 
                 animals.Add(new AnimalToCareDto
                 {
                     Id = animalToCare.Id,
-                    Animal = new AnimalDto
-                    {
-                        Id = animalDto.Id,
-                        Name = animalDto.Name,
-                        UserId = animalDto.UserId,
-                        YearOfBirth = animalDto.YearOfBirth
-                    },
+                    Animal = animalDto,
                     DateFrom = animalToCare.DateFrom,
                     DateTo = animalToCare.DateTo,
                     IsTaken = animalToCare.IsTaken
@@ -86,18 +78,12 @@ namespace Pets.Infrastructure.Services
 
             foreach (var animalToCare in animalsToCare)
             {
-                var animalDto = await _animalRepository.GetAsync(animalId);
+                var animalDto = await _animalService.GetAsync(animalId);
 
                 animals.Add(new AnimalToCareDto
                 {
                     Id = animalToCare.Id,
-                    Animal = new AnimalDto
-                    {
-                        Id = animalDto.Id,
-                        Name = animalDto.Name,
-                        UserId = animalDto.UserId,
-                        YearOfBirth = animalDto.YearOfBirth
-                    },
+                    Animal = animalDto,
                     DateFrom = animalToCare.DateFrom,
                     DateTo = animalToCare.DateTo,
                     IsTaken = animalToCare.IsTaken
