@@ -6,6 +6,7 @@ using Pets.Core.Repositories;
 using System.Linq;
 using Pets.Core.Domain;
 using Pets.Infrastructure.Extensions;
+using Pets.Infrastructure.Exceptions;
 
 namespace Pets.Infrastructure.Services
 {
@@ -108,7 +109,7 @@ namespace Pets.Infrastructure.Services
             var animalToGet = await GetActiveAnimalToCareById(animalId);
             if (animalToGet == null)
             {
-                throw new Exception("Animal with given ID is not available to get, because there is no active animal with that ID.");
+                throw new ServiceException(ErrorCodes.AnimalNotAvailable, "Animal with given ID is not available to get, because there is no active animal with that ID.");
             }
 
             var user = await _userRepository.GetOrFailAsync(userId);
@@ -123,7 +124,7 @@ namespace Pets.Infrastructure.Services
             var animalToDelete = await GetActiveAnimalToCareById(animalId);
             if(animalToDelete == null)
             {
-                throw new Exception("Animal with given ID is not available to delete, because there is no active animal with that ID.");
+                throw new ServiceException(ErrorCodes.AnimalNotAvailable, "Animal with given ID is not available to delete, because there is no active animal with that ID.");
             }
 
             await _animalToCareRepository.RemoveAsync(animalToDelete);
@@ -134,7 +135,7 @@ namespace Pets.Infrastructure.Services
             var animalToCareToUpdate = await GetActiveAnimalToCareById(animalId);
             if (animalToCareToUpdate == null)
             {
-                throw new Exception("Animal with given ID is not available to delete, because there is no active animal.");
+                throw new ServiceException(ErrorCodes.AnimalNotAvailable, "Animal with given ID is not available to delete, because there is no active animal with that ID.");
             }
 
             animalToCareToUpdate.SetIsTaken(isTaken);

@@ -1,5 +1,6 @@
 ﻿using Pets.Core.Domain;
 using Pets.Core.Repositories;
+using Pets.Infrastructure.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace Pets.Infrastructure.Extensions
             var user = await repository.GetAsync(email);
             if (user == null)
             {
-                throw new Exception($"User with email: {email} does not exist.");
+                throw new ServiceException(ErrorCodes.UserNotFound, $"User with email {email} does not exist.");
             }
 
             return user;
@@ -23,7 +24,7 @@ namespace Pets.Infrastructure.Extensions
             var user = await repository.GetAsync(userId);
             if (user == null)
             {
-                throw new Exception($"User with ID: {userId} does not exist.");
+                throw new ServiceException(ErrorCodes.UserNotFound, $"User with ID {userId} does not exist.");
             }
 
             return user;
@@ -34,7 +35,7 @@ namespace Pets.Infrastructure.Extensions
             var animal = await repository.GetAsync(animalId);
             if (animal == null)
             {
-                throw new Exception($"Animal with ID: {animalId} does not exist.");
+                throw new ServiceException(ErrorCodes.AnimalNotFound, $"Animal with ID {animalId} does not exist.");
             }
 
             return animal;
@@ -45,7 +46,7 @@ namespace Pets.Infrastructure.Extensions
             var animal = await repository.GetAsync(userId, name);
             if (animal == null)
             {
-                throw new Exception($"Animal with name: {name} does not exist for this user.");
+                throw new ServiceException(ErrorCodes.AnimalNotFound, $"Animal with name {name} does not exist for this user.");
             }
 
             return animal;

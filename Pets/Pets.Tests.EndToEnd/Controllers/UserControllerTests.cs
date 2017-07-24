@@ -60,7 +60,7 @@ namespace Pets.Tests.EndToEnd.Controllers
         {
             var response = await _client.GetAsync($"users/{_nonExistingUser.Email}");
 
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace Pets.Tests.EndToEnd.Controllers
         {
             var response = await RegisterUserAsync(_existingUser);
             
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace Pets.Tests.EndToEnd.Controllers
 
             var response = await _client.PutAsync($"users/{_nonExistingUser.Email}", payload);
 
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.BadRequest);
             //await Assert.ThrowsAnyAsync<Exception>(
             //    async () => await _client.PutAsync($"users/{_nonExistingUser.Email}", payload));
         }
@@ -127,7 +127,7 @@ namespace Pets.Tests.EndToEnd.Controllers
             response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.NoContent);
 
             response = await _client.GetAsync($"users/{_existingUserForDelete.Email}");
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -135,7 +135,7 @@ namespace Pets.Tests.EndToEnd.Controllers
         {
             var response = await _client.DeleteAsync($"users/{_nonExistingUser.Email}");
 
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -165,7 +165,7 @@ namespace Pets.Tests.EndToEnd.Controllers
 
             var response = await _client.PostAsync($"users/login", payload);
 
-            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.InternalServerError);
+            response.StatusCode.ShouldBeEquivalentTo(HttpStatusCode.BadRequest);
         }
 
         [Fact]

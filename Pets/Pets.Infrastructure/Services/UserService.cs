@@ -5,6 +5,7 @@ using Pets.Infrastructure.DTO;
 using Pets.Core.Repositories;
 using Pets.Core.Domain;
 using Pets.Infrastructure.Extensions;
+using Pets.Infrastructure.Exceptions;
 
 namespace Pets.Infrastructure.Services
 {
@@ -130,7 +131,7 @@ namespace Pets.Infrastructure.Services
                 return true;
             }
 
-            throw new Exception("Invalid credentials");
+            throw new ServiceException(ErrorCodes.InvalidCredentials, "Invalid credentials");
         }
 
         public async Task RegisterAsync(string email, string firstName, string lastName, string password)
@@ -138,7 +139,7 @@ namespace Pets.Infrastructure.Services
             var user = await _userRepository.GetAsync(email);
             if(user != null)
             {
-                throw new Exception($"User with email: {user.Email} already exists.");
+                throw new ServiceException(ErrorCodes.UserAlreadyExist, $"User with email {user.Email} already exists.");
             }
             
             var salt = _encrypter.GetSalt(password);
