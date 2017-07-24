@@ -85,7 +85,7 @@ namespace Pets.Api.Controllers
         {
             if (HttpContext.User.Identity.Name == null)
             {
-                throw new System.Exception("There is no logged user.");
+                throw new Exception("There is no logged user.");
             }
 
             return await Task.FromResult(HttpContext.User.Identity.Name);

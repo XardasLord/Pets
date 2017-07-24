@@ -2,7 +2,6 @@
 using Pets.Infrastructure.Commands.Users;
 using Pets.Infrastructure.DTO;
 using Pets.Infrastructure.Services;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
