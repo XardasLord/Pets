@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pets.Infrastructure.Commands.AnimalToCare;
 using Pets.Infrastructure.DTO;
+using Pets.Infrastructure.Exceptions;
 using Pets.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -77,7 +78,7 @@ namespace Pets.Api.Controllers
 
             if (animal.User.Email != await GetLoggedUserEmail())
             {
-                throw new Exception("You can only edit animal to care information from your account.");
+                throw new ServiceException(ErrorCodes.SiteNotAvailable, "You can only edit animal to care information from your account.");
             }
 
             await _animalToCareService.UpdateAsync(animalId, request.DateFrom, request.DateTo, request.IsTaken);
@@ -93,7 +94,7 @@ namespace Pets.Api.Controllers
             
             if (animal.User.Email != await GetLoggedUserEmail())
             {
-                throw new Exception("You can only delete animal to care from your account.");
+                throw new ServiceException(ErrorCodes.SiteNotAvailable, "You can only delete animal to care from your account.");
             }
 
             await _animalToCareService.DeleteAsync(animalId);
@@ -105,7 +106,7 @@ namespace Pets.Api.Controllers
         {
             if (HttpContext.User.Identity.Name == null)
             {
-                throw new System.Exception("There is no logged user.");
+                throw new ServiceException(ErrorCodes.UserNotFound, "There is no logged in user.");
             }
 
             return await Task.FromResult(HttpContext.User.Identity.Name);

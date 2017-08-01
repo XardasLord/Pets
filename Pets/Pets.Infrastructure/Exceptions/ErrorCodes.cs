@@ -9,5 +9,6 @@
         public static string UserNotFound => "user_not_found";
         public static string AnimalNotFound => "animal_not_found";
         public static string AnimalNotAvailable => "animal_not_available";
+        public static string SiteNotAvailable => "site_not_available";
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pets.Infrastructure.Commands.Animals;
 using Pets.Infrastructure.DTO;
+using Pets.Infrastructure.Exceptions;
 using Pets.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace Pets.Api.Controllers
         {
             if (email != await GetLoggedUserEmail())
             {
-                throw new Exception("You can only add animals to your account.");
+                throw new ServiceException(ErrorCodes.AnimalNotAvailable, "You can only add animals to your account.");
             }
 
             await _animalService.AddAsync(email, request.Name, request.YearOfBirth);
@@ -59,7 +60,7 @@ namespace Pets.Api.Controllers
         {
             if (email != await GetLoggedUserEmail())
             {
-                throw new Exception("You can only edit animals in your account.");
+                throw new ServiceException(ErrorCodes.AnimalNotAvailable, "You can only edit animals in your account.");
             }
 
             await _animalService.UpdateAsync(email, name, request.Name, request.YearOfBirth);
@@ -73,7 +74,7 @@ namespace Pets.Api.Controllers
         {
             if (email != await GetLoggedUserEmail())
             {
-                throw new Exception("You can only delete animals in your account.");
+                throw new ServiceException(ErrorCodes.AnimalNotAvailable, "You can only delete animals in your account.");
             }
 
             await _animalService.DeleteAsync(email, name);
@@ -85,7 +86,7 @@ namespace Pets.Api.Controllers
         {
             if (HttpContext.User.Identity.Name == null)
             {
-                throw new Exception("There is no logged user.");
+                throw new ServiceException(ErrorCodes.UserNotFound, "There is no logged in user.");
             }
 
             return await Task.FromResult(HttpContext.User.Identity.Name);
