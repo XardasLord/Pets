@@ -13,14 +13,17 @@ namespace Pets.Infrastructure.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IAnimalToCareRepository _animalToCareRepository;
+        private readonly IAnimalRepository _animalRepository;
         private readonly IEncrypter _encrypter;
 
         public UserService(IUserRepository userRepository,
-            IAnimalToCareRepository animalToCareRepository, 
+            IAnimalToCareRepository animalToCareRepository,
+            IAnimalRepository animalRepository,
             IEncrypter encrypter)
         {
             _userRepository = userRepository;
             _animalToCareRepository = animalToCareRepository;
+            _animalRepository = animalRepository;
             _encrypter = encrypter;
         }
 
@@ -67,14 +70,24 @@ namespace Pets.Infrastructure.Services
 
             var animalsToCareDto = new HashSet<AnimalToCareDto>();
 
-            foreach (var animal in animalsToCare)
+            foreach (var toCare in animalsToCare)
             {
+                var tmpAnimal = await _animalRepository.GetAsync(toCare.AnimalId);
+                var animalDto = new AnimalDto
+                {
+                    Id = toCare.Id,
+                    Name = tmpAnimal.Name,
+                    User = await GetAsync(email),
+                    YearOfBirth = toCare.Animal.YearOfBirth
+                };
+
                 animalsToCareDto.Add(new AnimalToCareDto
                 {
-                    Id = animal.Id,
-                    DateFrom = animal.DateFrom,
-                    DateTo = animal.DateTo,
-                    IsTaken = animal.IsTaken
+                    Id = toCare.Id,
+                    Animal = animalDto,
+                    DateFrom = toCare.DateFrom,
+                    DateTo = toCare.DateTo,
+                    IsTaken = toCare.IsTaken
                 });
             }
 
@@ -88,14 +101,24 @@ namespace Pets.Infrastructure.Services
 
             var animalsToCareDto = new HashSet<AnimalToCareDto>();
 
-            foreach (var animal in animalsToCare)
+            foreach (var toCare in animalsToCare)
             {
+                var tmpAnimal = await _animalRepository.GetAsync(toCare.AnimalId);
+                var animalDto = new AnimalDto
+                {
+                    Id = toCare.Id,
+                    Name = tmpAnimal.Name,
+                    User = await GetAsync(email),
+                    YearOfBirth = toCare.Animal.YearOfBirth
+                };
+
                 animalsToCareDto.Add(new AnimalToCareDto
                 {
-                    Id = animal.Id,
-                    DateFrom = animal.DateFrom,
-                    DateTo = animal.DateTo,
-                    IsTaken = animal.IsTaken
+                    Id = toCare.Id,
+                    Animal = animalDto,
+                    DateFrom = toCare.DateFrom,
+                    DateTo = toCare.DateTo,
+                    IsTaken = toCare.IsTaken
                 });
             }
 
@@ -105,11 +128,13 @@ namespace Pets.Infrastructure.Services
         public async Task UpdateAsync(string email, string firstName, string lastName, string password)
         {
             var user = await _userRepository.GetOrFailAsync(email);
-
+            
             user.SetEmail(email);
             user.SetFirstName(firstName);
             user.SetLastName(lastName);
-            user.SetPassword(password);
+
+            var hash = _encrypter.GetHash(password, user.Salt);
+            user.SetPassword(hash);
 
             await _userRepository.UpdateAsync(user);
         }

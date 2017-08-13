@@ -135,7 +135,7 @@ namespace Pets.Infrastructure.Services
             var animalToCareToUpdate = await GetActiveAnimalToCareById(animalId);
             if (animalToCareToUpdate == null)
             {
-                throw new ServiceException(ErrorCodes.AnimalNotAvailable, "Animal with given ID is not available to delete, because there is no active animal with that ID.");
+                throw new ServiceException(ErrorCodes.AnimalNotAvailable, "Animal with given ID is not available to update, because there is no active animal with that ID.");
             }
 
             animalToCareToUpdate.SetIsTaken(isTaken);

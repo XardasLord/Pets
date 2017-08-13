@@ -50,6 +50,12 @@ namespace Pets.Api.Controllers
                 return NotFound();
             }
 
+            var animal = await _animalService.GetAsync(request.AnimalId);
+            if (animal.User.Email != await GetLoggedUserEmail())
+            {
+                throw new ServiceException(ErrorCodes.SiteNotAvailable, "You can only add your own animal to care list.");
+            }
+
             await _animalToCareService.AddToCareListAsync(request.AnimalId, request.DateFrom, request.DateTo);
 
             return NoContent();
@@ -59,12 +65,11 @@ namespace Pets.Api.Controllers
         [HttpPost("care")]
         public async Task<IActionResult> Post([FromBody]GetAnimalToCare request)
         {
-            if(request == null)
+            if (request == null)
             {
                 return NotFound();
             }
 
-            //TODO: Getting care of animal by the user - send POST request.
             await _animalToCareService.GetAnimalToCareAsync(request.AnimalId, request.UserId);
 
             return NoContent();
@@ -79,6 +84,11 @@ namespace Pets.Api.Controllers
             if (animal.User.Email != await GetLoggedUserEmail())
             {
                 throw new ServiceException(ErrorCodes.SiteNotAvailable, "You can only edit animal to care information from your account.");
+            }
+
+            if (request == null)
+            {
+                return NotFound();
             }
 
             await _animalToCareService.UpdateAsync(animalId, request.DateFrom, request.DateTo, request.IsTaken);

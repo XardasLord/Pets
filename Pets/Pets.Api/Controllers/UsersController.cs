@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pets.Infrastructure.Commands.Users;
 using Pets.Infrastructure.DTO;
+using Pets.Infrastructure.Exceptions;
 using Pets.Infrastructure.Services;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -89,11 +91,17 @@ namespace Pets.Api.Controllers
 
             return Created($"users/{request.Email}", new object());
         }
-        
+
+        [Authorize]
         [HttpPut("{email}")]
         public async Task<IActionResult> Put(string email, [FromBody]UpdateUser request)
         {
-            if(request == null)
+            if (email != await GetLoggedUserEmail())
+            {
+                throw new ServiceException(ErrorCodes.UserNotFound, "You can only edit information on your account.");
+            }
+
+            if (request == null)
             {
                 return BadRequest();
             }
@@ -107,10 +115,16 @@ namespace Pets.Api.Controllers
             
             return NoContent();
         }
-        
+
+        [Authorize]
         [HttpDelete("{email}")]
         public async Task<IActionResult> Delete(string email)
         {
+            if (email != await GetLoggedUserEmail())
+            {
+                throw new ServiceException(ErrorCodes.UserNotFound, "You can only delete your account.");
+            }
+
             if (await DoesUserExist(email) == false)
             {
                 return NotFound();
@@ -126,6 +140,16 @@ namespace Pets.Api.Controllers
             var user = await _userService.GetAsync(email);
 
             return user == null ? false : true;
+        }
+
+        public async Task<string> GetLoggedUserEmail()
+        {
+            if (HttpContext.User.Identity.Name == null)
+            {
+                throw new ServiceException(ErrorCodes.UserNotFound, "There is no logged in user.");
+            }
+
+            return await Task.FromResult(HttpContext.User.Identity.Name);
         }
     }
 }

@@ -4,7 +4,6 @@ using Pets.Infrastructure.Commands.Animals;
 using Pets.Infrastructure.DTO;
 using Pets.Infrastructure.Exceptions;
 using Pets.Infrastructure.Services;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

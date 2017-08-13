@@ -5,6 +5,7 @@ using Pets.Infrastructure.DTO;
 using Pets.Core.Repositories;
 using Pets.Core.Domain;
 using Pets.Infrastructure.Extensions;
+using Pets.Infrastructure.Exceptions;
 
 namespace Pets.Infrastructure.Services
 {
@@ -80,7 +81,11 @@ namespace Pets.Infrastructure.Services
         public async Task AddAsync(string email, string name, int yearOfBirth)
         {
             var user = await _userRepository.GetOrFailAsync(email);
-            var animal = await _animalRepository.GetOrFailAsync(user.Id, name);
+            var animal = await _animalRepository.GetAsync(user.Id, name);
+            if (animal != null)
+            {
+                throw new ServiceException(ErrorCodes.AnimalAlreadyExist, $"Animal with name {name} already exists.");
+            }
 
             var newAnimal = new Animal(user.Id, name);
             newAnimal.SetYearOfBirth(yearOfBirth);
