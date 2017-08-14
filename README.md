@@ -52,4 +52,4 @@ Returns a list of all registered users.
 None
 
 ### Example Response
-![GET users](https://github.com/XardasLord/Pets/blob/master/GET%20users.PNG)
+![GET users](https://github.com/XardasLord/Pets/blob/master/Documentation/GET%20users.PNG)
