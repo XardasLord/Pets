@@ -53,3 +53,47 @@ None
 
 ### Example Response
 ![GET users](https://github.com/XardasLord/Pets/blob/master/Documentation/GET%20users.PNG)
+
+
+## GET users/{email}
+Returns a user with specific e-mail address given in the URL GET request.
+
+### Resource Information
+<table>
+  <tr>
+    <td>Response formats</td>
+    <td>JSON</td>
+  </tr>
+  <tr>
+    <td>Requires authentication?</td>
+    <td>No</td>
+  </tr>
+</table>
+
+### Parameters	
+None
+
+### Example Response
+![GET users](https://github.com/XardasLord/Pets/blob/master/Documentation/GET%20users-%7Bemail%7D.PNG)
+
+
+## GET users/{email}/animals
+Returns a list of user's animals with specific e-mail address given in the URL GET request.
+
+### Resource Information
+<table>
+  <tr>
+    <td>Response formats</td>
+    <td>JSON</td>
+  </tr>
+  <tr>
+    <td>Requires authentication?</td>
+    <td>No</td>
+  </tr>
+</table>
+
+### Parameters	
+None
+
+### Example Response
+![GET users](https://github.com/XardasLord/Pets/blob/master/Documentation/GET%20users-%7Bemail%7D-animals.PNG)
