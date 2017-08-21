@@ -112,6 +112,7 @@ namespace Pets.Api.Controllers
             return NoContent();
         }
 
+        [NonAction]
         public async Task<string> GetLoggedUserEmail()
         {
             if (HttpContext.User.Identity.Name == null)

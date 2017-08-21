@@ -10,6 +10,7 @@ using Pets.Infrastructure.EF;
 using Pets.Infrastructure.Settings;
 using Microsoft.AspNetCore.Http;
 using Pets.Api.Framework;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Pets.Api
 {
@@ -50,6 +51,18 @@ namespace Pets.Api
             services.AddScoped<IEncrypter, Encrypter>();
 
             services.AddMvc();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", 
+                    new Info
+                    {
+                        Version = "v1",
+                        Title = "Pets API",
+                        Description = "The API allows you to take care of someone's pet in some period of time when the owner can't.",
+                        Contact = new Contact { Name = "Paweł Kowalewicz", Email = "kowalewicz.pawel@gmail.com", Url = "http://www.pawelkowalewicz.pl"}
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,7 +75,6 @@ namespace Pets.Api
             {
                 AuthenticationScheme = "CookieAuthentication",
                 LoginPath = new PathString("/users/login"),
-                //AccessDeniedPath = new PathString("/Account/Forbidden/"),
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true
             });
@@ -70,6 +82,12 @@ namespace Pets.Api
             app.UseExceptionHandlerCustom();
 
             app.UseMvc();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pets API");
+            });
         }
     }
 }

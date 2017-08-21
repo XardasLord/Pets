@@ -25,7 +25,7 @@ namespace Pets.Api.Controllers
         {
             return await _userService.GetAllAsync();
         }
-        
+
         [HttpGet("{email}")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
@@ -135,6 +135,7 @@ namespace Pets.Api.Controllers
             return NoContent();
         }
 
+        [NonAction]
         private async Task<bool> DoesUserExist(string email)
         {
             var user = await _userService.GetAsync(email);
@@ -142,6 +143,7 @@ namespace Pets.Api.Controllers
             return user == null ? false : true;
         }
 
+        [NonAction]
         public async Task<string> GetLoggedUserEmail()
         {
             if (HttpContext.User.Identity.Name == null)
