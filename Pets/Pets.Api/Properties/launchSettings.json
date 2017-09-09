@@ -13,6 +13,7 @@
       "launchBrowser": true,
       "launchUrl": "users",
       "environmentVariables": {
+        // Develompent, Staging, Production
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -21,6 +22,7 @@
       "launchBrowser": true,
       "launchUrl": "users",
       "environmentVariables": {
+        // Develompent, Staging, Production
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:60919"

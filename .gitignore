@@ -5,6 +5,7 @@
 /.vs
 /Pets/.vs/Pets/v15
 /Pets/Pets.Api/bin/Debug/netcoreapp1.1
+/Pets/Pets.Api/bin/Release
 /Pets/Pets.Api/obj
 /Pets/Pets.Core/bin/Debug/netcoreapp1.1
 /Pets/Pets.Core/obj
