@@ -1,6 +1,12 @@
 # Pets
 This is a RESTful API created in .NET Core. The API allows you to take care of someone's pet in some period of time when the owner can't.
 
+# API Address
+Address to API: http://www.pets.pawelkowalewicz.pl
+
+# Documentation
+Address to REST API endpoint reference documentation: http://www.pets.pawelkowalewicz.pl/swagger/
+
 # Reference Documentation
 These are the REST API endpoint reference docs.
 
