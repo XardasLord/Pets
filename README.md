@@ -10,6 +10,10 @@ Address to REST API endpoint reference documentation: http://www.pets.pawelkowal
 # Reference Documentation
 These are the REST API endpoint reference docs.
 
+
+PS. This documentation here in README.md file is not completed. For the fully completed endpoint reference documentation please go here: http://www.pets.pawelkowalewicz.pl/swagger/
+
+
 **GET**
 * GET users
 * GET users/{email} 
